@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise do Currículo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <header class="hero">
+        <div class="container">
+            <h1><i data-lucide="clipboard-list"></i> Análise de Currículo</h1>
+        </div>
+    </header>
+
+    <section class="analysis">
+        <div class="container">
+            <h2>Insira as Informações</h2>
+            <form id="form-analise">
+                <label for="vaga">Descrição da Vaga</label>
+                <textarea id="vaga" placeholder="Descreva a vaga desejada..." rows="6"></textarea>
+
+                <label for="curriculo">Seu Currículo</label>
+                <textarea id="curriculo" placeholder="Descreva suas experiências..." rows="8"></textarea>
+
+                <button type="button" onclick="analisar()">
+                    <i data-lucide="bar-chart-3"></i> Analisar
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Analisador de Currículos</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

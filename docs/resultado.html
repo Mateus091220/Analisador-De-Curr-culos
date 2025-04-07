@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado da Análise</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="hero">
+        <div class="container">
+            <h1><i data-lucide="bar-chart"></i> Resultado da Análise</h1>
+            <p>Veja sua compatibilidade e descubra como melhorar seu currículo!</p>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main>
+        <section class="analysis">
+            <div class="container layout-analisado"> <!--NOVO WRAPPER FLEX-->
+
+                <div class = "bloco-principal">
+                <!-- Compatibilidade -->
+                <h2><i data-lucide="search"></i> Compatibilidade</h2>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <span id="compatibilidade">Carregando...</span>
+
+                <!-- Sugestões -->
+                <div class="suggestions">
+                    <h3><i data-lucide="lightbulb"></i> Sugestões de Melhorias</h3>
+                    <div id="sugestoes-formatadas"></div>
+                </div>
+
+                <!-- Gráfico -->
+                <section class="grafico-container">
+                    <h3><i data-lucide="activity"></i> Gráfico de Pontos Fortes e Fracos</h3>
+                    <canvas id="graficoPalavras" width="400" height="200"></canvas>
+                </section>
+
+                <!-- Palavras-chave -->
+                <section class="analise-palavras">
+                    <h3>Palavras-chave da Vaga Analisadas</h3>
+                    <div class="listas-palavras">
+                        <div class="presentes">
+                            <h4><i data-lucide="check-circle"></i> Presentes no Currículo</h4>
+                            <ul id="lista-presentes"></ul>
+                        </div>
+                        <div class="faltantes">
+                            <h4><i data-lucide="x-circle"></i> Faltando no Currículo</h4>
+                            <ul id="lista-faltantes"></ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Botão para nova análise -->
+                <a href="landing.html" class="btn">
+                    <i data-lucide="rotate-cw"></i> Fazer Nova Análise
+                </a>
+
+                <!-- Futuro: Modelo ideal de currículo -->
+                <!--
+                <section class="modelo-curriculo">
+                    <h3><i data-lucide="file-text"></i> Modelo de Currículo Ideal</h3>
+                    <p>Baseado na vaga analisada, este é um exemplo de como o seu currículo poderia ser estruturado:</p>
+                    <div id="modelo-ideal">
+                        <!-- Geração dinâmica futura -->
+                    </div>
+                </section>
+                -->
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2025 Analisador de Currículos. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
