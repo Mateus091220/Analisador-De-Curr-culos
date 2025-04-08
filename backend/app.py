@@ -9,11 +9,11 @@ import string
 import os
 from docx import Document
 import PyPDF2
-from flask_cors import CORS
 
 # Inicializações
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "https://mateus091220.github.io"}})
+CORS(app, supports_credentials=True, origins=["https://mateus091220.github.io"])
+
 @app.before_request
 def log_headers():
     print("🔥 Origin:", request.headers.get('Origin'))
@@ -160,7 +160,7 @@ def analisar_textos(curriculo, vaga):
 def analisar_curriculo():
     try:
         vaga = request.form.get('vaga', '')
-        arquivo = request.files.get('curriculo')
+        arquivo = request.files.get('curriculo_arquivo')
 
         if not vaga.strip():
             return jsonify({'erro': 'A descrição da vaga é obrigatória'}), 400
@@ -191,5 +191,3 @@ if __name__ == "__main__":
     import os
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=True)
-
-

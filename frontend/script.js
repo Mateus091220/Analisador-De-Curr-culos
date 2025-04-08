@@ -10,7 +10,7 @@ function analisar() {
 
     const formData = new FormData();
     formData.append("vaga", vaga);
-    formData.append("curriculo_arquivo", arquivo); // corrigido aqui!
+    formData.append("curriculo_arquivo", arquivo);
 
     fetch('https://analisador-curriculo.onrender.com/analisar', {
         method: "POST",
@@ -18,6 +18,11 @@ function analisar() {
     })
     .then(response => response.json())
     .then(data => {
+        if (data.erro) {
+            alert(data.erro);
+            return;
+        }
+
         localStorage.setItem("compatibilidade", data.score);
         localStorage.setItem("melhorias", JSON.stringify(data.melhorias));
         localStorage.setItem("presentes", JSON.stringify(data.presentes));
@@ -25,11 +30,13 @@ function analisar() {
         localStorage.setItem("modelo_ideal", data.modelo_ideal);
         window.location.href = "resultado.html";
     })
-    .catch(error => console.error("Erro ao analisar:", error));
+    .catch(error => {
+        console.error("Erro ao analisar:", error);
+        alert("Erro ao enviar o currículo. Tente novamente.");
+    });
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Aciona a análise ao enviar o formulário
     const form = document.getElementById("form-analise");
     if (form) {
         form.addEventListener("submit", function (e) {
@@ -39,10 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (document.getElementById("compatibilidade")) {
-        let score = localStorage.getItem("compatibilidade");
-        let melhorias = JSON.parse(localStorage.getItem("melhorias"));
-        let presentes = JSON.parse(localStorage.getItem("presentes") || "[]");
-        let faltantes = JSON.parse(localStorage.getItem("faltantes") || "[]");
+        const score = localStorage.getItem("compatibilidade");
+        const melhorias = JSON.parse(localStorage.getItem("melhorias"));
+        const presentes = JSON.parse(localStorage.getItem("presentes") || "[]");
+        const faltantes = JSON.parse(localStorage.getItem("faltantes") || "[]");
 
         const ulPresentes = document.getElementById("lista-presentes");
         presentes.forEach(palavra => {
@@ -108,7 +115,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("compatibilidade").textContent = score + "%";
 
-        const prioridades = { "Essencial": [], "Importante": [], "Opcional": [] };
+        const prioridades = {
+            "Essencial": [],
+            "Importante": [],
+            "Opcional": []
+        };
 
         if (Array.isArray(melhorias)) {
             melhorias.forEach(item => {
@@ -129,9 +140,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 let icone = "";
 
                 switch (prioridade) {
-                    case "Essencial": icone = "alert-triangle"; break;
-                    case "Importante": icone = "info"; break;
-                    case "Opcional": icone = "lightbulb"; break;
+                    case "Essencial":
+                        icone = "alert-triangle";
+                        break;
+                    case "Importante":
+                        icone = "info";
+                        break;
+                    case "Opcional":
+                        icone = "lightbulb";
+                        break;
                 }
 
                 titulo.innerHTML = `<i data-lucide="${icone}"></i> ${prioridade}`;
