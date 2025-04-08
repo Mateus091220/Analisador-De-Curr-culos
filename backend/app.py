@@ -1,37 +1,54 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
+
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet, stopwords
 import string
+import os
+from docx import Document
+import PyPDF2
 
-# Baixar recursos apenas se ainda não estiverem disponíveis
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
+# Inicializações
+app = Flask(__name__)
+CORS(app)
 
-try:
-    nltk.data.find('corpora/wordnet')
-except LookupError:
-    nltk.download('wordnet')
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.txt'}
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-try:
-    nltk.data.find('corpora/omw-1.4')
-except LookupError:
-    nltk.download('omw-1.4')
+# Baixar recursos NLTK
+for resource in ['punkt', 'wordnet', 'omw-1.4', 'stopwords']:
+    try:
+        nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' else f'corpora/{resource}')
+    except LookupError:
+        nltk.download(resource)
 
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
-
-# Carregar stopwords para o idioma português
 stop_words = set(stopwords.words('portuguese'))
 pontuacoes = set(string.punctuation)
 
-app = Flask(__name__)
-CORS(app)
+def allowed_file(filename):
+    return os.path.splitext(filename)[1].lower() in ALLOWED_EXTENSIONS
+
+def extrair_texto_curriculo(caminho):
+    try:
+        if caminho.endswith('.pdf'):
+            with open(caminho, 'rb') as f:
+                reader = PyPDF2.PdfReader(f)
+                return "\n".join([page.extract_text() or "" for page in reader.pages])
+        elif caminho.endswith('.docx'):
+            doc = Document(caminho)
+            return "\n".join([p.text for p in doc.paragraphs])
+        elif caminho.endswith('.txt'):
+            with open(caminho, 'r', encoding='utf-8') as f:
+                return f.read()
+        else:
+            return ""
+    except Exception as e:
+        print(f"[ERRO] Erro ao extrair texto: {e}")
+        return ""
 
 def get_synonyms(word):
     synonyms = set()
@@ -44,16 +61,36 @@ def adicionar_melhoria(lista, prioridade, mensagem):
     if not any(m['mensagem'] == mensagem for m in lista):
         lista.append({"prioridade": prioridade, "mensagem": mensagem})
 
-@app.route('/analisar', methods=['POST'])
-def analisar_curriculo():
-    dados = request.get_json()
-    vaga = dados.get('vaga', '').lower()
-    curriculo = dados.get('curriculo', '').lower()
+def gerar_modelo_ideal(palavras_chave):
+    exemplo = f"""
+Currículo Ideal para a Vaga
 
-    if not vaga or not curriculo:
-        return jsonify({'erro': 'Campos vaga e currículo são obrigatórios.'}), 400
+📌 Objetivo:
+Candidatar-se à vaga de acordo com a descrição fornecida.
 
-    # Tokeniza e remove stopwords e pontuação
+💼 Experiência Profissional:
+- Experiência sólida com {', '.join(palavras_chave[:3])}.
+- Projetos práticos envolvendo {', '.join(palavras_chave[3:6])}.
+
+🛠️ Habilidades Técnicas:
+- {', '.join(palavras_chave[6:])}
+
+📚 Cursos e Certificações:
+- Certificação em {', '.join([p for p in palavras_chave if p in ['python', 'sql', 'aws', 'docker', 'excel', 'powerbi', 'javascript']])}.
+
+📈 Resultados:
+- Melhoria de processos em 25% através do uso de tecnologias como {', '.join(palavras_chave[:2])}.
+
+📞 Contato:
+- Email: seuemail@exemplo.com
+- LinkedIn: linkedin.com/in/seuperfil
+"""
+    return exemplo.strip()
+
+def analisar_textos(curriculo, vaga):
+    vaga = vaga.lower()
+    curriculo = curriculo.lower()
+
     palavras_vaga = list(set([
         word for word in word_tokenize(vaga, preserve_line=True)
         if word not in stop_words and word not in pontuacoes
@@ -84,7 +121,6 @@ def analisar_curriculo():
 
     score = int(min(100, (correspondencias / total) * 100)) if total else 0
 
-    # Sugestões de melhoria
     if palavras_faltantes:
         sugestao_palavras = ", ".join(palavras_faltantes[:5])
         adicionar_melhoria(melhorias, "Essencial", f"Você pode adicionar palavras como: {sugestao_palavras}")
@@ -108,12 +144,39 @@ def analisar_curriculo():
         adicionar_melhoria(melhorias, "Opcional", "Tente personalizar o currículo para cada vaga.")
         adicionar_melhoria(melhorias, "Opcional", "Verifique a formatação para manter um visual profissional.")
 
-    return jsonify({
+    return {
         'score': score,
         'melhorias': melhorias,
         'presentes': list(set(palavras_presentes)),
         'faltantes': palavras_faltantes
-    })
+    }
+
+@app.route('/analisar', methods=['POST'])
+def analisar_curriculo():
+    try:
+        vaga = request.form.get('vaga', '')
+        arquivo = request.files.get('curriculo')
+
+        if not vaga.strip():
+            return jsonify({'erro': 'A descrição da vaga é obrigatória'}), 400
+        if not arquivo or not allowed_file(arquivo.filename):
+            return jsonify({'erro': 'Envie um arquivo válido (.pdf, .docx ou .txt)'}), 400
+
+        filename = secure_filename(arquivo.filename)
+        caminho = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        arquivo.save(caminho)
+
+        texto_curriculo = extrair_texto_curriculo(caminho)
+        if not texto_curriculo.strip():
+            return jsonify({'erro': 'Não foi possível extrair texto do arquivo'}), 400
+
+        resultado = analisar_textos(texto_curriculo, vaga)
+        modelo_ideal = gerar_modelo_ideal(resultado['presentes'] + resultado['faltantes'])
+        resultado['modelo_ideal'] = modelo_ideal
+        return jsonify(resultado)
+
+    except Exception as e:
+        return jsonify({'erro': f'Erro interno: {str(e)}'}), 500
 
 @app.route('/')
 def home():

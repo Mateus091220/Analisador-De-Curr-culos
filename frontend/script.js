@@ -18,6 +18,7 @@ function analisar() {
         localStorage.setItem("melhorias", JSON.stringify(data.melhorias));
         localStorage.setItem("presentes", JSON.stringify(data.presentes));
         localStorage.setItem("faltantes", JSON.stringify(data.faltantes));
+        localStorage.setItem("modelo_ideal", data.modelo_ideal);
         window.location.href = "resultado.html";
     })
     .catch(error => console.error("Erro ao analisar:", error));
@@ -172,3 +173,14 @@ document.addEventListener("DOMContentLoaded", function () {
         lucide.createIcons(); // Ativa os ícones Lucide
     }
 });
+function toggleModeloIdeal() {
+    const modelo = document.getElementById("modeloIdeal");
+
+    if (modelo.style.display === "none") {
+        const texto = localStorage.getItem("modelo_ideal") || "Modelo ideal não encontrado.";
+        modelo.innerText = texto;
+        modelo.style.display = "block";
+    } else {
+        modelo.style.display = "none";
+    }
+}
