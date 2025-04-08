@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Render App
-        run: curl -s https://analisador-de-curriculos.onrender.com || echo "App está dormindo ou offline"
+        run: curl -s https://analisador-de-curr-culos.onrender.com || echo "App está dormindo ou offline"
