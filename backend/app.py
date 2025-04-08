@@ -9,6 +9,7 @@ import string
 import os
 from docx import Document
 import PyPDF2
+from flask_cors import CORS
 
 # Inicializações
 app = Flask(__name__)
