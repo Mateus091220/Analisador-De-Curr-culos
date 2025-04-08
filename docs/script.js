@@ -16,8 +16,15 @@ function analisar() {
         method: "POST",
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erro do servidor: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
+        console.log('Resposta recebida:', data);
+
         if (data.erro) {
             alert(data.erro);
             return;
@@ -31,8 +38,8 @@ function analisar() {
         window.location.href = "resultado.html";
     })
     .catch(error => {
-        console.error("Erro ao analisar:", error);
-        alert("Erro ao enviar o currículo. Tente novamente.");
+        console.error('Erro ao enviar ou processar:', error);
+        alert("Erro ao enviar o currículo: " + error.message);
     });
 }
 
