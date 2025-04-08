@@ -13,7 +13,11 @@ from flask_cors import CORS
 
 # Inicializações
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://mateus091220.github.io"}})
+@app.before_request
+def log_headers():
+    print("🔥 Origin:", request.headers.get('Origin'))
+    print("🔥 Headers:", dict(request.headers))
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'.pdf', '.docx', '.txt'}
