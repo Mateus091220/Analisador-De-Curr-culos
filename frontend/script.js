@@ -1,16 +1,20 @@
 function analisar() {
-    let vaga = document.getElementById("vaga").value.trim();
-    let curriculo = document.getElementById("curriculo").value.trim();
+    const vaga = document.getElementById("vaga").value.trim();
+    const arquivoInput = document.querySelector('input[name="curriculo_arquivo"]');
+    const arquivo = arquivoInput.files[0];
 
-    if (!vaga || !curriculo) {
+    if (!vaga || !arquivo) {
         alert("Por favor, preencha todos os campos.");
         return;
     }
 
-    fetch("https://analisador-curriculo.onrender.com/analisar", {
+    const formData = new FormData();
+    formData.append("vaga", vaga);
+    formData.append("curriculo_arquivo", arquivo); // corrigido aqui!
+
+    fetch("https://analisador-curriculo.onrender.com/analisar_arquivo", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vaga, curriculo })
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
@@ -25,13 +29,21 @@ function analisar() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Aciona a análise ao enviar o formulário
+    const form = document.getElementById("form-analise");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            analisar();
+        });
+    }
+
     if (document.getElementById("compatibilidade")) {
         let score = localStorage.getItem("compatibilidade");
         let melhorias = JSON.parse(localStorage.getItem("melhorias"));
         let presentes = JSON.parse(localStorage.getItem("presentes") || "[]");
         let faltantes = JSON.parse(localStorage.getItem("faltantes") || "[]");
 
-        // Exibe palavras presentes
         const ulPresentes = document.getElementById("lista-presentes");
         presentes.forEach(palavra => {
             const li = document.createElement("li");
@@ -39,7 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ulPresentes.appendChild(li);
         });
 
-        // Exibe palavras faltantes
         const ulFaltantes = document.getElementById("lista-faltantes");
         faltantes.forEach(palavra => {
             const li = document.createElement("li");
@@ -47,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ulFaltantes.appendChild(li);
         });
 
-        // Gera gráfico
         const ctx = document.getElementById('graficoPalavras').getContext('2d');
         const grafico = new Chart(ctx, {
             type: 'bar',
@@ -55,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 labels: ['Palavras Presentes', 'Palavras Faltantes'],
                 datasets: [{
                     label: 'Quantidade',
-                    data: [10,5],
+                    data: [presentes.length, faltantes.length],
                     backgroundColor: ['#2ecc71', '#e74c3c'],
                     borderRadius: 8,
                     barThickness: 60,
@@ -64,9 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
             options: {
                 responsive: true,
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             label: context => ` ${context.dataset.label}: ${context.formattedValue}`
@@ -76,50 +84,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            font: {
-                                size: 14
-                            }
-                        },
-                        grid: {
-                            color: '#eee'
-                        }
+                        ticks: { stepSize: 1, font: { size: 14 } },
+                        grid: { color: '#eee' }
                     },
                     x: {
-                        ticks: {
-                            font: {
-                                size: 14
-                            }
-                        },
-                        grid: {
-                            display: false
-                        }
+                        ticks: { font: { size: 14 } },
+                        grid: { display: false }
                     }
                 }
             }
         });
 
-        // Atualiza barra de compatibilidade
         const barra = document.getElementById("progress-bar");
         barra.style.width = `${score}%`;
 
         if (score < 50) {
-            barra.style.backgroundColor = "#e74c3c"; // vermelho
+            barra.style.backgroundColor = "#e74c3c";
         } else if (score < 80) {
-            barra.style.backgroundColor = "#f1c40f"; // amarelo
+            barra.style.backgroundColor = "#f1c40f";
         } else {
-            barra.style.backgroundColor = "#2ecc71"; // verde
+            barra.style.backgroundColor = "#2ecc71";
         }
 
         document.getElementById("compatibilidade").textContent = score + "%";
 
-        // Agrupa sugestões por prioridade
-        const prioridades = {
-            "Essencial": [],
-            "Importante": [],
-            "Opcional": []
-        };
+        const prioridades = { "Essencial": [], "Importante": [], "Opcional": [] };
 
         if (Array.isArray(melhorias)) {
             melhorias.forEach(item => {
@@ -128,11 +117,9 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Limpa sugestões anteriores
         const sugestoesDiv = document.getElementById("sugestoes-formatadas");
         sugestoesDiv.innerHTML = "";
 
-        // Cria blocos para cada prioridade
         Object.keys(prioridades).forEach(prioridade => {
             if (prioridades[prioridade].length > 0) {
                 const bloco = document.createElement("div");
@@ -142,15 +129,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 let icone = "";
 
                 switch (prioridade) {
-                    case "Essencial":
-                        icone = "alert-triangle";
-                        break;
-                    case "Importante":
-                        icone = "info";
-                        break;
-                    case "Opcional":
-                        icone = "lightbulb";
-                        break;
+                    case "Essencial": icone = "alert-triangle"; break;
+                    case "Importante": icone = "info"; break;
+                    case "Opcional": icone = "lightbulb"; break;
                 }
 
                 titulo.innerHTML = `<i data-lucide="${icone}"></i> ${prioridade}`;
@@ -170,9 +151,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        lucide.createIcons(); // Ativa os ícones Lucide
+        lucide.createIcons();
     }
 });
+
 function toggleModeloIdeal() {
     const modelo = document.getElementById("modeloIdeal");
 
