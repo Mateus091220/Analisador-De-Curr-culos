@@ -17,16 +17,16 @@
     <section class="analysis">
         <div class="container">
             <h2>Insira as Informações</h2>
-            <form id="form-analise">
-                <label for="vaga">Descrição da Vaga</label>
-                <textarea id="vaga" placeholder="Descreva a vaga desejada..." rows="6"></textarea>
+            <form id="form-analise" enctype="multipart/form-data" method="POST" action="/analisar">
+                <label for="vaga">Descrição da Vaga:</label>
+                <textarea name="vaga" id="vaga" required></textarea>
 
-                <label for="curriculo">Seu Currículo</label>
-                <textarea id="curriculo" placeholder="Descreva suas experiências..." rows="8"></textarea>
+                <label for="curriculo">Cole seu Currículo ou envie um arquivo:</label>
+                <textarea name="curriculo_texto" id="curriculo_texto" placeholder="Ou envie o arquivo abaixo"></textarea>
 
-                <button type="button" onclick="analisar()">
-                    <i data-lucide="bar-chart-3"></i> Analisar
-                </button>
+                <input type="file" name="curriculo_arquivo" accept=".pdf,.docx,.txt" />
+
+                <button type="submit">Analisar</button>
             </form>
         </div>
     </section>
