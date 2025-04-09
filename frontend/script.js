@@ -1,20 +1,23 @@
 function analisar() {
     const vaga = document.getElementById("vaga").value.trim();
-    const arquivoInput = document.querySelector('input[name="curriculo_arquivo"]');
-    const arquivo = arquivoInput.files[0];
+    const curriculo = document.getElementById("curriculo").value.trim();
 
-    if (!vaga || !arquivo) {
+    if (!vaga || !curriculo) {
         alert("Por favor, preencha todos os campos.");
         return;
     }
 
-    const formData = new FormData();
-    formData.append("vaga", vaga);
-    formData.append("curriculo_arquivo", arquivo);
+    const payload = {
+        vaga: vaga,
+        curriculo_texto: curriculo
+    };
 
     fetch('https://analisador-de-curr-culos.onrender.com/analisar', {
         method: "POST",
-        body: formData
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
     })
     .then(response => {
         if (!response.ok) {
@@ -23,8 +26,6 @@ function analisar() {
         return response.json();
     })
     .then(data => {
-        console.log('Resposta recebida:', data);
-
         if (data.erro) {
             alert(data.erro);
             return;
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         const ctx = document.getElementById('graficoPalavras').getContext('2d');
-        const grafico = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: ['Palavras Presentes', 'Palavras Faltantes'],
