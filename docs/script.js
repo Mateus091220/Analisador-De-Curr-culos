@@ -12,7 +12,7 @@ function analisar() {
     formData.append("vaga", vaga);
     formData.append("curriculo_arquivo", arquivo);
 
-    fetch('https://analisador-curriculo.onrender.com/analisar', {
+    fetch('https://analisador-de-curr-culos.onrender.com', {
         method: "POST",
         body: formData
     })
