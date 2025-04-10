@@ -1,24 +1,25 @@
 function analisar() {
+    // Captura o conteúdo da vaga e do currículo
     const vaga = document.getElementById("vaga").value.trim();
     const curriculo = document.getElementById("curriculo").value.trim();
 
-    // Adicionando os logs para verificar o conteúdo antes de enviar
-    console.log("Vaga:", vaga);  // Verifique o conteúdo da vaga
-    console.log("Currículo:", curriculo);  // Verifique o conteúdo do currículo
+    // Adicionando logs para depuração
+    console.log("Vaga:", vaga); // Verificando o conteúdo da vaga
+    console.log("Currículo:", curriculo); // Verificando o conteúdo do currículo
 
+    // Verificação para garantir que ambos os campos estão preenchidos
     if (!vaga || !curriculo) {
         alert("Por favor, preencha todos os campos.");
         return;
     }
 
+    // Montagem do payload
     const payload = {
         vaga: vaga,
         curriculo_texto: curriculo
     };
 
-    // Log do conteúdo do payload antes de enviar
-    console.log("Payload enviado:", payload);
-
+    // Envio da requisição para o backend
     fetch('https://analisador-de-curr-culos.onrender.com/analisar', {
         method: "POST",
         headers: {
@@ -27,12 +28,8 @@ function analisar() {
         body: JSON.stringify(payload)
     })
     .then(response => {
-        // Verifica se a resposta é bem-sucedida (status 200)
         if (!response.ok) {
-            return response.text().then(text => {
-                console.error('Erro do servidor:', text); // Imprime a resposta do servidor para investigar o erro 400
-                throw new Error(`Erro do servidor: ${response.status} - ${text}`);
-            });
+            throw new Error(`Erro do servidor: ${response.status}`);
         }
         return response.json();
     })
@@ -54,6 +51,7 @@ function analisar() {
         alert("Erro ao enviar o currículo: " + error.message);
     });
 }
+
 
 
 document.addEventListener("DOMContentLoaded", function () {
