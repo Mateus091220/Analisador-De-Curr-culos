@@ -82,8 +82,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🧠 Submissão do formulário
     if (form) {
         form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            analisar();
+            e.preventDefault(); // impede o envio tradicional
+            analisar(); // Chama a função que analisa os dados
         });
     }
 
