@@ -12,6 +12,9 @@ function analisar() {
         curriculo_texto: curriculo
     };
 
+    // Log do conteúdo do payload antes de enviar
+    console.log("Payload enviado:", payload);
+
     fetch('https://analisador-de-curr-culos.onrender.com/analisar', {
         method: "POST",
         headers: {
@@ -20,8 +23,12 @@ function analisar() {
         body: JSON.stringify(payload)
     })
     .then(response => {
+        // Verifica se a resposta é bem-sucedida (status 200)
         if (!response.ok) {
-            throw new Error(`Erro do servidor: ${response.status}`);
+            return response.text().then(text => {
+                console.error('Erro do servidor:', text); // Imprime a resposta do servidor para investigar o erro 400
+                throw new Error(`Erro do servidor: ${response.status} - ${text}`);
+            });
         }
         return response.json();
     })
@@ -43,6 +50,7 @@ function analisar() {
         alert("Erro ao enviar o currículo: " + error.message);
     });
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("form-analise");
