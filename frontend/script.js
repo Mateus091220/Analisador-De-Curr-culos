@@ -41,6 +41,8 @@ function analisar() {
         localStorage.setItem("presentes", JSON.stringify(data.presentes));
         localStorage.setItem("faltantes", JSON.stringify(data.faltantes));
         localStorage.setItem("modelo_ideal", data.modelo_ideal);
+
+        // Redirecionar corretamente para a tela de resultados
         window.location.href = "resultado.html";
     })
     .catch(error => {
@@ -50,7 +52,47 @@ function analisar() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Carregar dados do localStorage
+    const form = document.getElementById("form-analise");
+    const uploadInput = document.getElementById("file-upload");
+    const campoCurriculo = document.getElementById("curriculo");
+
+    if (uploadInput && campoCurriculo) {
+        uploadInput.addEventListener("change", async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("curriculo_arquivo", file);
+
+            try {
+                const response = await fetch("https://analisador-de-curr-culos.onrender.com/extrair-curriculo", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                console.log("Texto extraído:", data);
+
+                if (data.texto) {
+                    campoCurriculo.value = data.texto; // Preencher o campo de currículo com o texto extraído
+                } else {
+                    alert("Não foi possível extrair o texto do currículo.");
+                }
+            } catch (error) {
+                console.error("Erro ao processar o arquivo:", error);
+                alert("Erro ao processar o currículo: " + error.message);
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            analisar();
+        });
+    }
+
+    // Carregar dados do localStorage para a página de resultados
     const compatibilidade = localStorage.getItem("compatibilidade");
     const melhorias = JSON.parse(localStorage.getItem("melhorias"));
     const presentes = JSON.parse(localStorage.getItem("presentes"));
@@ -61,7 +103,38 @@ document.addEventListener("DOMContentLoaded", function () {
     if (compatibilidade) {
         document.getElementById("compatibilidade").innerText = `${compatibilidade}%`;
         document.getElementById("progress-bar").style.width = `${compatibilidade}%`;
-    } 
+
+        // Verificação do Gráfico com Chart.js
+        const ctx = document.getElementById('compatibilidade-chart').getContext('2d');
+        const compatibilidadeChart = new Chart(ctx, {
+            type: 'pie', // Tipo de gráfico (pode ser 'pie', 'bar', 'line', etc.)
+            data: {
+                labels: ['Compatibilidade', 'Outros'], // Rótulos do gráfico
+                datasets: [{
+                    label: 'Compatibilidade',
+                    data: [compatibilidade, 100 - compatibilidade], // Dados do gráfico
+                    backgroundColor: ['#4caf50', '#e0e0e0'], // Cores para compatibilidade e outros
+                    borderColor: ['#388e3c', '#9e9e9e'], // Cores da borda
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true, // Responsividade do gráfico
+                plugins: {
+                    legend: {
+                        position: 'top', // Posição da legenda
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `${tooltipItem.label}: ${tooltipItem.raw}%`; // Formatação do tooltip
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
     // Exibir sugestões de melhorias
     if (melhorias && melhorias.length > 0) {
@@ -98,6 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Função para alternar a exibição do modelo ideal
 function toggleModeloIdeal() {
     const modelo = document.getElementById("modeloIdeal");
 
