@@ -12,7 +12,7 @@ import PyPDF2
 
 # Inicializações
 app = Flask(__name__)
-CORS(app, origins=["https://cv-match.netlify.app"])
+CORS(app, origins=["https://cv-match.netlify.app", "https://outro-dominio.com"])
 
 @app.before_request
 def log_headers():
