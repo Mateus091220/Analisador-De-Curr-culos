@@ -2,6 +2,10 @@ function analisar() {
     const vaga = document.getElementById("vaga").value.trim();
     const curriculo = document.getElementById("curriculo").value.trim();
 
+    // Adicionando os logs para verificar o conteúdo antes de enviar
+    console.log("Vaga:", vaga);  // Verifique o conteúdo da vaga
+    console.log("Currículo:", curriculo);  // Verifique o conteúdo do currículo
+
     if (!vaga || !curriculo) {
         alert("Por favor, preencha todos os campos.");
         return;
