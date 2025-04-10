@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet, stopwords
@@ -12,7 +11,7 @@ import PyPDF2
 
 # Inicializações
 app = Flask(__name__)
-CORS(app, origins=["https://cv-match.netlify.app"])  # Domínio do frontend
+CORS(app, origins=["https://cv-match.netlify.app"])
 
 @app.before_request
 def log_headers():
@@ -75,14 +74,14 @@ def gerar_modelo_ideal(palavras_chave):
         "📌 Objetivo:\n"
         "Candidatar-se à vaga de acordo com a descrição fornecida.\n\n"
         "💼 Experiência Profissional:\n"
-        f"- Experiência sólida com {', '.join(palavras_chave[:3])}.\n"
-        f"- Projetos práticos envolvendo {', '.join(palavras_chave[3:6])}.\n\n"
+        f"- Experiência sólida com {', '.join(palavras_chave[:3] if len(palavras_chave) >= 3 else palavras_chave)}.\n"
+        f"- Projetos práticos envolvendo {', '.join(palavras_chave[3:6] if len(palavras_chave) >= 6 else palavras_chave[3:])}.\n\n"
         "🛠️ Habilidades Técnicas:\n"
-        f"- {', '.join(palavras_chave[6:])}\n\n"
+        f"- {', '.join(palavras_chave[6:] if len(palavras_chave) >= 7 else palavras_chave)}.\n\n"
         "📚 Cursos e Certificações:\n"
         f"- Certificação em {', '.join(cursos_mencionados)}.\n\n"
         "📈 Resultados:\n"
-        f"- Melhoria de processos em 25% através do uso de tecnologias como {', '.join(palavras_chave[:2])}.\n\n"
+        f"- Melhoria de processos em 25% através do uso de tecnologias como {', '.join(palavras_chave[:2] if len(palavras_chave) >= 2 else palavras_chave)}.\n\n"
         "📞 Contato:\n"
         "- Email: seuemail@exemplo.com\n"
         "- LinkedIn: linkedin.com/in/seuperfil"
@@ -157,7 +156,6 @@ def analisar_textos(curriculo, vaga):
 @app.route('/analisar', methods=['POST', 'OPTIONS'])
 def analisar_curriculo():
     if request.method == 'OPTIONS':
-        # Responde ao preflight
         response = jsonify({'status': 'ok'})
         response.headers['Access-Control-Allow-Origin'] = 'https://cv-match.netlify.app'
         response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
@@ -169,6 +167,8 @@ def analisar_curriculo():
 
         if 'application/json' in content_type:
             data = request.get_json()
+            if not data:
+                return jsonify({'erro': 'Nenhum dado JSON recebido'}), 400
             vaga = data.get('vaga', '').strip()
             texto_curriculo = data.get('curriculo_texto', '').strip()
             if not texto_curriculo:
@@ -182,7 +182,8 @@ def analisar_curriculo():
             caminho = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             arquivo.save(caminho)
             texto_curriculo = extrair_texto_curriculo(caminho)
-            os.remove(caminho)
+            if os.path.exists(caminho):
+                os.remove(caminho)
         else:
             return jsonify({'erro': 'Formato de dados não suportado'}), 400
 
@@ -191,8 +192,15 @@ def analisar_curriculo():
         if not texto_curriculo:
             return jsonify({'erro': 'Não foi possível extrair texto do currículo'}), 400
 
+        # Aqui definimos 'resultado' antes de usá-lo
+        resultado = analisar_textos(texto_curriculo, vaga)
+        modelo_ideal = gerar_modelo_ideal(resultado['presentes'] + resultado['faltantes'])
+        resultado['modelo_ideal'] = modelo_ideal
+
         return jsonify(resultado)
 
+    except ValueError as ve:
+        return jsonify({'erro': f'Erro de validação: {str(ve)}'}), 400
     except Exception as e:
         return jsonify({'erro': f'Erro interno: {str(e)}'}), 500
 
@@ -207,7 +215,6 @@ def extrair_curriculo():
 
     try:
         arquivo = request.files.get('curriculo_arquivo')
-
         if not arquivo or not allowed_file(arquivo.filename):
             return jsonify({'erro': 'Envie um arquivo válido (.pdf, .docx ou .txt)'}), 400
 
@@ -216,8 +223,6 @@ def extrair_curriculo():
         arquivo.save(caminho)
 
         texto = extrair_texto_curriculo(caminho)
-
-        # Exclui o arquivo após a extração
         if os.path.exists(caminho):
             os.remove(caminho)
 
@@ -234,6 +239,5 @@ def home():
     return "API está rodando!"
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=True)
