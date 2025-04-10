@@ -1,41 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análise do Currículo</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV Match - Análise de Currículo</title>
+
+  <!-- Fonte moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- CSS externo -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="hero">
-        <div class="container">
-            <h1><i data-lucide="clipboard-list"></i> Análise de Currículo</h1>
-        </div>
-    </header>
 
-    <section class="analysis">
-        <div class="container">
-            <h2>Insira as Informações</h2>
-            <form id="form-analise">
-                <label for="vaga">Descrição da Vaga:</label>
-                <textarea name="vaga" id="vaga" required></textarea>
+  <header class="header-analyze">
+    <div class="header-content">
+      <a href="index.html" class="logo"><i data-lucide="check-circle"></i> CV Match</a>
+      <h1><i data-lucide="clipboard-list"></i> Análise de Currículo</h1>
+    </div>
 
-                <label for="curriculo">Cole seu Currículo:</label>
-                <textarea name="curriculo" id="curriculo" required></textarea>
-
-                <button type="submit">Analisar</button>
-            </form>
-        </div>
+    <section class="usage-tips-header">
+      <div class="tip-box">
+        <i data-lucide="file-text"></i>
+        <p><strong>Copie a vaga completa</strong><br>incluindo requisitos e qualificações.</p>
+      </div>
+      <div class="tip-box">
+        <i data-lucide="clipboard-signature"></i>
+        <p><strong>Cole seu currículo</strong><br>com experiências e cursos completos.</p>
+      </div>
+      <div class="tip-box">
+        <i data-lucide="alert-circle"></i>
+        <p><strong>Evite colar imagens ou PDFs.</strong><br>Use apenas texto puro.</p>
+      </div>
     </section>
+  </header>
 
-    <footer>
-        <p>© 2025 Analisador de Currículos</p>
-    </footer>
+  <section class="form-container">
+    <h2>Insira as Informações</h2>
+    <form action="/analisar" method="POST">
+      <div class="form-group">
+        <label for="vaga">Descrição da Vaga:</label>
+        <textarea id="vaga" name="vaga" placeholder="Ex: Desenvolvedor Frontend com experiência em React..."></textarea>
+      </div>
 
-    <script>
-        lucide.createIcons();
-    </script>
-    <script src="script.js"></script>
+      <div class="form-group">
+        <label for="file-upload" class="upload-label">
+            📎 Enviar currículo (PDF ou Word)
+          </label>
+          <input type="file" id="file-upload" accept=".pdf,.doc,.docx" />
+          
+          <label for="curriculo">Cole seu Currículo:</label>
+          <textarea id="curriculo" placeholder="Cole aqui o texto do seu currículo..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary">Analisar</button>
+    </form>
+  </section>
+
+  <footer>
+    © 2025 CV Match — Todos os direitos reservados.
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>

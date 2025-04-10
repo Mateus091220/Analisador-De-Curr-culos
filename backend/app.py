@@ -67,29 +67,27 @@ def adicionar_melhoria(lista, prioridade, mensagem):
         lista.append({"prioridade": prioridade, "mensagem": mensagem})
 
 def gerar_modelo_ideal(palavras_chave):
-    exemplo = f"""
-Currículo Ideal para a Vaga
+    cursos = ['python', 'sql', 'aws', 'docker', 'excel', 'powerbi', 'javascript']
+    cursos_mencionados = [p for p in palavras_chave if p in cursos]
 
-📌 Objetivo:
-Candidatar-se à vaga de acordo com a descrição fornecida.
+    exemplo = (
+        "Currículo Ideal para a Vaga\n\n"
+        "📌 Objetivo:\n"
+        "Candidatar-se à vaga de acordo com a descrição fornecida.\n\n"
+        "💼 Experiência Profissional:\n"
+        f"- Experiência sólida com {', '.join(palavras_chave[:3])}.\n"
+        f"- Projetos práticos envolvendo {', '.join(palavras_chave[3:6])}.\n\n"
+        "🛠️ Habilidades Técnicas:\n"
+        f"- {', '.join(palavras_chave[6:])}\n\n"
+        "📚 Cursos e Certificações:\n"
+        f"- Certificação em {', '.join(cursos_mencionados)}.\n\n"
+        "📈 Resultados:\n"
+        f"- Melhoria de processos em 25% através do uso de tecnologias como {', '.join(palavras_chave[:2])}.\n\n"
+        "📞 Contato:\n"
+        "- Email: seuemail@exemplo.com\n"
+        "- LinkedIn: linkedin.com/in/seuperfil"
+    )
 
-💼 Experiência Profissional:
-- Experiência sólida com {', '.join(palavras_chave[:3])}.
-- Projetos práticos envolvendo {', '.join(palavras_chave[3:6])}.
-
-🛠️ Habilidades Técnicas:
-- {', '.join(palavras_chave[6:])}
-
-📚 Cursos e Certificações:
-- Certificação em {', '.join([p for p in palavras_chave if p in ['python', 'sql', 'aws', 'docker', 'excel', 'powerbi', 'javascript']])}.
-
-📈 Resultados:
-- Melhoria de processos em 25% através do uso de tecnologias como {', '.join(palavras_chave[:2])}.
-
-📞 Contato:
-- Email: seuemail@exemplo.com
-- LinkedIn: linkedin.com/in/seuperfil
-"""
     return exemplo.strip()
 
 def analisar_textos(curriculo, vaga):
@@ -178,10 +176,37 @@ def analisar_curriculo():
         resultado = analisar_textos(texto_curriculo, vaga)
         modelo_ideal = gerar_modelo_ideal(resultado['presentes'] + resultado['faltantes'])
         resultado['modelo_ideal'] = modelo_ideal
+
         return jsonify(resultado)
 
     except Exception as e:
         return jsonify({'erro': f'Erro interno: {str(e)}'}), 500
+
+@app.route('/extrair-curriculo', methods=['POST'])
+def extrair_curriculo():
+    try:
+        arquivo = request.files.get('curriculo_arquivo')
+
+        if not arquivo or not allowed_file(arquivo.filename):
+            return jsonify({'erro': 'Envie um arquivo válido (.pdf, .docx ou .txt)'}), 400
+
+        filename = secure_filename(arquivo.filename)
+        caminho = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        arquivo.save(caminho)
+
+        texto = extrair_texto_curriculo(caminho)
+
+        # Exclui o arquivo após a extração
+        if os.path.exists(caminho):
+            os.remove(caminho)
+
+        if not texto.strip():
+            return jsonify({'erro': 'Não foi possível extrair texto do arquivo'}), 400
+
+        return jsonify({'texto': texto.strip()})
+
+    except Exception as e:
+        return jsonify({'erro': f'Erro ao extrair texto: {str(e)}'}), 500
 
 @app.route('/')
 def home():

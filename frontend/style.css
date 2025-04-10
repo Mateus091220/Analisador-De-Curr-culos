@@ -41,28 +41,36 @@
   .hero {
     background: linear-gradient(to right, #0057ff, #0099ff);
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 20px;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  .hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
   }
   
-  .hero p {
-    font-size: 1.2rem;
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
   }
   
-  .hero .btn {
-    background-color: yellow;
-    color: black;
-    margin-top: 20px;
+  .hero-subtitle {
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
   }
   
-  .hero .btn:hover {
-    background-color: #ffd700;
+  .destaque {
+    color: #ffcc00;
+    font-weight: bold;
   }
+  
   
   /* ÁREA DE ANÁLISE */
   .analysis {
@@ -82,6 +90,8 @@
     border-radius: 8px;
     font-size: 1.1rem;
     resize: none;
+    
+
   }
   
   textarea:focus {
@@ -489,4 +499,468 @@
     margin: 15px auto 0 auto;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
-  
+  /* Hero */
+.hero {
+  background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+  color: #fff;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.hero-description {
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background-color: #facc15;
+  color: #1e293b;
+  padding: 12px 28px;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #eab308;
+}
+
+/* Seções gerais */
+.section {
+  padding: 80px 20px;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  text-align: center;
+  color: #1e293b;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+/* Preview */
+.preview-img {
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  margin-top: 20px;
+}
+
+/* Call to action */
+.cta {
+  background: #facc15;
+  color: #1e293b;
+  padding: 60px 20px;
+}
+
+.cta-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+/* Footer */
+.footer {
+  background: #1e293b;
+  color: #fff;
+  padding: 20px;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: #facc15;
+  text-decoration: none;
+}
+.section-combo {
+  padding: 60px 20px;
+  background-color: #f8f9fa;
+}
+
+.combo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.combo-block {
+  text-align: center;
+}
+
+.combo-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 30px 20px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card i {
+  color: #0057ff;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #666;
+}
+.hero .btn {
+  background-color: #ffcc00;
+  color: #000;
+  display: inline-block;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.hero .btn:hover {
+  background-color: #ffdd44;
+  transform: scale(1.05);
+}
+/* CALL TO ACTION FINAL - ESTILO HERO */
+.section.cta {
+  background: linear-gradient(to right, #0057ff, #0099ff); /* igual à .hero */
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
+}
+
+.section.cta .container.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Botão amarelo estilo hero */
+.section.cta .btn-primary {
+  background-color: #ffcc00;
+  color: black;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.section.cta .btn-primary:hover {
+  background-color: #ffdd44;
+  transform: scale(1.05);
+}
+* {
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+}
+form textarea,
+form input[type="text"] {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 120px; /* para o textarea */
+}
+
+form input[type="text"] {
+  min-height: 50px;
+}/* ANÁLISE DE CURRÍCULO - PÁGINA */
+.header-analyze {
+  background: linear-gradient(to right, #0057ff, #0099ff);
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
+}
+
+.header-analyze h1 {
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.form-container {
+  max-width: 1200px;
+  width: 90%; /* isso garante responsividade */
+  margin: 60px auto;
+  background: white;
+  padding: 50px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.form-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 40px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 40px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 20px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 200px;
+  background: #fdfdfd;
+}
+
+footer {
+  margin-top: auto;
+  background: #1c1c1c;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9rem;
+}
+/* Reset e fonte padrão */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #f8f9fa;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header-analyze {
+  background: linear-gradient(to right, #0057ff, #0099ff);
+  color: white;
+  padding: 40px 20px 20px;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-content .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-content h1 {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* DICAS NO TOPO */
+.usage-tips-header {
+  max-width: 1200px;
+  margin: 30px auto 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.tip-box {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  min-width: 240px;
+}
+
+.tip-box i {
+  margin-bottom: 10px;
+  width: 28px;
+  height: 28px;
+}
+
+/* FORMULÁRIO */
+.form-container {
+  max-width: 1200px;
+  margin: 60px auto;
+  background: white;
+  padding: 60px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.form-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 40px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 40px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 20px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 200px;
+  background: #fdfdfd;
+}
+
+/* BOTÃO */
+.btn-primary {
+  background: #ffcc00;
+  color: #000;
+  padding: 18px;
+  font-size: 1.15rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #ffdd33;
+  transform: scale(1.03);
+}
+
+/* FOOTER */
+footer {
+  margin-top: auto;
+  background: #1c1c1c;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9rem;
+}
+/* Centraliza o título */
+.header-content h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

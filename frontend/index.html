@@ -1,49 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisador de Currículos</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/lucide@latest"></script> <!-- Lucide Icons -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CV Match</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="favicon.ico" />
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <header class="hero">
-        <div class="container">
-            <h1><i data-lucide="search"></i> Analisador de Currículos</h1>
-            <p>Descubra a compatibilidade do seu currículo com as vagas que deseja.</p>
-            <a href="analise.html" class="btn">
-                <i data-lucide="arrow-right-circle"></i> Começar Análise
-            </a>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Transforme seu currículo em um <span class="destaque">ímã de oportunidades</span>.</h1>
+      <p class="hero-subtitle">
+        Aumente suas chances com uma análise <span class="destaque">inteligente</span> e <span class="destaque">personalizada</span><br>
+        para conquistar a vaga dos seus sonhos.
+      </p>
+      <a href="analise.html" class="btn">Comece agora</a>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA + POR QUE USAR -->
+  <section class="section section-combo">
+    <div class="container combo-grid">
+      
+      <!-- COMO FUNCIONA -->
+      <div class="combo-block">
+        <h2 class="section-title">Como funciona?</h2>
+        <div class="combo-cards">
+          <div class="card">
+            <i data-lucide="clipboard-list"></i>
+            <h3>Cole seu currículo</h3>
+            <p>Insira o conteúdo do seu currículo na área de análise.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="briefcase"></i>
+            <h3>Adicione a vaga</h3>
+            <p>Informe a descrição da vaga que você quer se candidatar.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="search-check"></i>
+            <h3>Veja a análise</h3>
+            <p>Descubra a compatibilidade entre seu perfil e a vaga.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="arrow-up-circle"></i>
+            <h3>Melhore seu currículo</h3>
+            <p>Receba dicas e sugestões para se destacar.</p>
+          </div>
         </div>
-    </header>
+      </div>
 
-    <section class="features">
-        <div class="container">
-            <h2>Por que usar o Analisador?</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3><i data-lucide="bar-chart-3"></i> Avaliação Inteligente</h3>
-                    <p>Nosso sistema analisa palavras-chave e oferece sugestões para aprimorar seu currículo.</p>
-                </div>
-                <div class="card">
-                    <h3><i data-lucide="zap"></i> Rápido e Fácil</h3>
-                    <p>Insira sua vaga e seu currículo e obtenha um relatório detalhado em segundos.</p>
-                </div>
-                <div class="card">
-                    <h3><i data-lucide="target"></i> Mais chances de emprego</h3>
-                    <p>Melhore sua apresentação e aumente suas chances de ser chamado para entrevistas.</p>
-                </div>
-            </div>
+      <!-- POR QUE USAR -->
+      <div class="combo-block">
+        <h2 class="section-title">Por que usar o CV Match?</h2>
+        <div class="combo-cards">
+          <div class="card">
+            <i data-lucide="target"></i>
+            <h3>Palavras-chave importantes</h3>
+            <p>Identifique os termos que você precisa incluir no currículo.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="sparkles"></i>
+            <h3>Sugestões personalizadas</h3>
+            <p>Dicas inteligentes com base na vaga que você quer.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="bar-chart-3"></i>
+            <h3>Gráficos visuais</h3>
+            <p>Veja seus pontos fortes e fracos com clareza.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="file-text"></i>
+            <h3>Modelo ideal</h3>
+            <p>Gere um currículo ideal com base na vaga analisada.</p>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <footer>
-        <p>© 2025 - Criado para facilitar sua busca pelo emprego ideal <i data-lucide="rocket"></i></p>
-    </footer>
+    </div>
+  </section>
 
-    <script>
-        lucide.createIcons(); // Ativar ícones do Lucide
-    </script>
+  <!-- PREVIEW -->
+  <section class="section preview">
+    <div class="container center">
+      <h2 class="section-title">Veja o CV Match em ação</h2>
+      <img src="preview.gif" alt="Preview da aplicação" class="preview-img"/>
+    </div>
+  </section>
+
+  <!-- CALL TO ACTION FINAL -->
+  <section class="section cta">
+    <div class="container center">
+      <h2 class="cta-title">Pronto para turbinar seu currículo?</h2>
+      <a href="analise.html" class="btn-primary">Começar análise agora</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container center">
+      <p>&copy; 2025 CV Match. Desenvolvido por <a href="https://github.com/mateus" target="_blank">Mateus</a>.</p>
+    </div>
+  </footer>
+
+  <!-- ATIVA OS ÍCONES LUCIDE -->
+  <script>
+    lucide.createIcons();
+  </script>
+
 </body>
 </html>

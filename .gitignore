@@ -1,6 +1,9 @@
 # Ignorar arquivos Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
 
 # Ambiente virtual
 env/
@@ -16,3 +19,4 @@ Thumbs.db
 # Frontend
 node_modules/
 dist/
+
