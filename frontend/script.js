@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!file) return;
 
             const formData = new FormData();
-            formData.append("file", file);
+            formData.append("curriculo_arquivo", file); // <- aqui o nome certo
+
 
             try {
                 const response = await fetch("https://analisador-de-curr-culos.onrender.com/extrair-curriculo", {
