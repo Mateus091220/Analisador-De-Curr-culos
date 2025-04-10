@@ -1,25 +1,20 @@
 function analisar() {
-    // Captura o conteúdo da vaga e do currículo
     const vaga = document.getElementById("vaga").value.trim();
     const curriculo = document.getElementById("curriculo").value.trim();
 
-    // Adicionando logs para depuração
-    console.log("Vaga:", vaga); // Verificando o conteúdo da vaga
-    console.log("Currículo:", curriculo); // Verificando o conteúdo do currículo
+    console.log("Vaga:", vaga);
+    console.log("Currículo:", curriculo);
 
-    // Verificação para garantir que ambos os campos estão preenchidos
     if (!vaga || !curriculo) {
         alert("Por favor, preencha todos os campos.");
         return;
     }
 
-    // Montagem do payload
     const payload = {
         vaga: vaga,
         curriculo_texto: curriculo
     };
 
-    // Envio da requisição para o backend
     fetch('https://analisador-de-curr-culos.onrender.com/analisar', {
         method: "POST",
         headers: {
@@ -28,12 +23,14 @@ function analisar() {
         body: JSON.stringify(payload)
     })
     .then(response => {
+        console.log("Status da resposta:", response.status);
         if (!response.ok) {
-            throw new Error(`Erro do servidor: ${response.status}`);
+            return response.text().then(text => { throw new Error(`Erro do servidor: ${response.status} - ${text}`); });
         }
         return response.json();
     })
     .then(data => {
+        console.log("Dados recebidos:", data);
         if (data.erro) {
             alert(data.erro);
             return;
@@ -52,22 +49,18 @@ function analisar() {
     });
 }
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("form-analise");
     const uploadInput = document.getElementById("file-upload");
     const campoCurriculo = document.getElementById("curriculo");
 
-    // 🆕 Upload de currículo
     if (uploadInput && campoCurriculo) {
         uploadInput.addEventListener("change", async (event) => {
             const file = event.target.files[0];
             if (!file) return;
 
             const formData = new FormData();
-            formData.append("curriculo_arquivo", file); // <- aqui o nome certo
-
+            formData.append("curriculo_arquivo", file);
 
             try {
                 const response = await fetch("https://analisador-de-curr-culos.onrender.com/extrair-curriculo", {
@@ -76,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 const data = await response.json();
+                console.log("Texto extraído:", data);
 
                 if (data.texto) {
                     campoCurriculo.value = data.texto;
@@ -84,23 +78,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             } catch (error) {
                 console.error("Erro ao processar o arquivo:", error);
-                alert("Erro ao processar o currículo.");
+                alert("Erro ao processar o currículo: " + error.message);
             }
         });
     }
 
-    // 🧠 Submissão do formulário
     if (form) {
         form.addEventListener("submit", function (e) {
-            e.preventDefault(); // impede o envio tradicional
-            analisar(); // Chama a função que analisa os dados
+            e.preventDefault();
+            analisar();
         });
-    }
-
-    // 🔁 Tela de resultado
-    if (document.getElementById("compatibilidade")) {
-        // ... (mantém o mesmo código atual da tela de resultados)
-        // pode deixar exatamente como já está aqui, está funcional e completo
     }
 });
 

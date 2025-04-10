@@ -12,7 +12,7 @@ import PyPDF2
 
 # Inicializações
 app = Flask(__name__)
-CORS(app, origins=["https://cv-match.netlify.app", "https://outro-dominio.com"])
+CORS(app, origins=["https://cv-match.netlify.app"])  # Domínio do frontend
 
 @app.before_request
 def log_headers():
@@ -154,36 +154,57 @@ def analisar_textos(curriculo, vaga):
         'faltantes': palavras_faltantes
     }
 
-@app.route('/analisar', methods=['POST'])
+@app.route('/analisar', methods=['POST', 'OPTIONS'])
 def analisar_curriculo():
+    if request.method == 'OPTIONS':
+        # Responde ao preflight
+        response = jsonify({'status': 'ok'})
+        response.headers['Access-Control-Allow-Origin'] = 'https://cv-match.netlify.app'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response, 200
+
     try:
-        vaga = request.form.get('vaga', '')
-        arquivo = request.files.get('curriculo_arquivo')
+        content_type = request.headers.get('Content-Type', '')
 
-        if not vaga.strip():
+        if 'application/json' in content_type:
+            data = request.get_json()
+            vaga = data.get('vaga', '').strip()
+            texto_curriculo = data.get('curriculo_texto', '').strip()
+            if not texto_curriculo:
+                return jsonify({'erro': 'O texto do currículo é obrigatório'}), 400
+        elif 'multipart/form-data' in content_type:
+            vaga = request.form.get('vaga', '').strip()
+            arquivo = request.files.get('curriculo_arquivo')
+            if not arquivo or not allowed_file(arquivo.filename):
+                return jsonify({'erro': 'Envie um arquivo válido (.pdf, .docx ou .txt)'}), 400
+            filename = secure_filename(arquivo.filename)
+            caminho = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            arquivo.save(caminho)
+            texto_curriculo = extrair_texto_curriculo(caminho)
+            os.remove(caminho)
+        else:
+            return jsonify({'erro': 'Formato de dados não suportado'}), 400
+
+        if not vaga:
             return jsonify({'erro': 'A descrição da vaga é obrigatória'}), 400
-        if not arquivo or not allowed_file(arquivo.filename):
-            return jsonify({'erro': 'Envie um arquivo válido (.pdf, .docx ou .txt)'}), 400
-
-        filename = secure_filename(arquivo.filename)
-        caminho = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        arquivo.save(caminho)
-
-        texto_curriculo = extrair_texto_curriculo(caminho)
-        if not texto_curriculo.strip():
-            return jsonify({'erro': 'Não foi possível extrair texto do arquivo'}), 400
-
-        resultado = analisar_textos(texto_curriculo, vaga)
-        modelo_ideal = gerar_modelo_ideal(resultado['presentes'] + resultado['faltantes'])
-        resultado['modelo_ideal'] = modelo_ideal
+        if not texto_curriculo:
+            return jsonify({'erro': 'Não foi possível extrair texto do currículo'}), 400
 
         return jsonify(resultado)
 
     except Exception as e:
         return jsonify({'erro': f'Erro interno: {str(e)}'}), 500
 
-@app.route('/extrair-curriculo', methods=['POST'])
+@app.route('/extrair-curriculo', methods=['POST', 'OPTIONS'])
 def extrair_curriculo():
+    if request.method == 'OPTIONS':
+        response = jsonify({'status': 'ok'})
+        response.headers['Access-Control-Allow-Origin'] = 'https://cv-match.netlify.app'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response, 200
+
     try:
         arquivo = request.files.get('curriculo_arquivo')
 
