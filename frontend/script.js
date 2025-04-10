@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (compatibilidade) {
         document.getElementById("compatibilidade").innerText = `${compatibilidade}%`;
         document.getElementById("progress-bar").style.width = `${compatibilidade}%`;
-    }
+    } 
 
     // Exibir sugestões de melhorias
     if (melhorias && melhorias.length > 0) {
