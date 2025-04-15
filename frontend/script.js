@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!window.location.pathname.includes("resultado.html")) return;
 
     // Lê os dados armazenados no localStorage
-    const compatibilidade = localStorage.getItem("compatibilidade");
+    const compatibilidade = parseFloat(localStorage.getItem("compatibilidade") || "0");
     const melhorias = JSON.parse(localStorage.getItem("melhorias") || "[]");
     const presentes = JSON.parse(localStorage.getItem("presentes") || "[]");
     const faltantes = JSON.parse(localStorage.getItem("faltantes") || "[]");
@@ -125,14 +125,17 @@ function gerarModeloIdeal() {
 // Função para aplicar os estilos dinâmicos de acordo com a compatibilidade
 function aplicarEstilos(compatibilidade) {
     const progressBar = document.getElementById("progress-bar");
+    if (!progressBar) return;
+
     if (compatibilidade >= 80) {
-        progressBar.style.backgroundColor = "#4caf50"; // Verde para alta compatibilidade
+        progressBar.style.backgroundColor = "#4caf50"; // Verde
     } else if (compatibilidade >= 50) {
-        progressBar.style.backgroundColor = "#ff9800"; // Laranja para média compatibilidade
+        progressBar.style.backgroundColor = "#ff9800"; // Laranja
     } else {
-        progressBar.style.backgroundColor = "#f44336"; // Vermelho para baixa compatibilidade
+        progressBar.style.backgroundColor = "#f44336"; // Vermelho
     }
 }
+
 
 // Função para exibir um alerta ao usuário com dicas de como melhorar o currículo
 function mostrarAlertaMelhoria() {
