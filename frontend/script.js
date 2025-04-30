@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             try {
                 // Envia a requisição ao backend
-                const response = await fetch("https://analisador-de-curr-culos.onrender.com/", {
+                const response = await fetch("https://analisador-de-curr-culos.onrender.com/analisar", {
                     method: "POST",
                     body: formData,
                 });
