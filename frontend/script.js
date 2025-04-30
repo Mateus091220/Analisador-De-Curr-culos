@@ -168,3 +168,52 @@ document.addEventListener("DOMContentLoaded", () => {
     // Exibe o modelo ideal de currículo
     gerarModeloIdeal();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("form-analise");
+    if (form) {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            // Coleta os dados do formulário
+            const vaga = document.getElementById("vaga").value;
+            const curriculo = document.getElementById("curriculo").value;
+            const fileInput = document.getElementById("file-upload");
+            const formData = new FormData();
+
+            formData.append("vaga", vaga);
+            if (fileInput.files.length > 0) {
+                formData.append("curriculo_arquivo", fileInput.files[0]);
+            } else {
+                formData.append("curriculo_texto", curriculo);
+            }
+
+            try {
+                // Envia a requisição ao backend
+                const response = await fetch("https://analisador-de-curr-culos.onrender.com/", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro na requisição: ${response.statusText}`);
+                }
+
+                const resultado = await response.json();
+
+                // Salva os resultados no localStorage
+                localStorage.setItem("compatibilidade", resultado.score);
+                localStorage.setItem("melhorias", JSON.stringify(resultado.melhorias.map(m => m.mensagem)));
+                localStorage.setItem("presentes", JSON.stringify(resultado.presentes));
+                localStorage.setItem("faltantes", JSON.stringify(resultado.faltantes));
+                localStorage.setItem("modelo_ideal", resultado.modelo_ideal);
+
+                // Redireciona para resultado.html
+                window.location.href = "resultado.html";
+            } catch (error) {
+                console.error("Erro ao enviar análise:", error);
+                alert("Ocorreu um erro ao processar a análise. Tente novamente.");
+            }
+        });
+    }
+});
